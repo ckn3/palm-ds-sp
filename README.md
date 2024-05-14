@@ -1,5 +1,5 @@
 # palm-detection
 
 Prerequisite packages:
-rasterio
-shapely
+'pip install rasterio'
+'pip install shapely'
