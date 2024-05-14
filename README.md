@@ -20,7 +20,7 @@ You can install these packages using pip. Run the following command:
 pip install rasterio shapely geopandas natsort
 ```
 
-The `tif2yolo` function crops the images in the `images/site{x}` folder into 800x800 patches and creates the corresponding `.txt` files for these images, which are formatted for YOLO training. All processed images and their corresponding `.txt` files are saved to the `datasets` folder.
+The `tif2yolo` function crops the images in the `images/site{x}` folder into 800x800 patches and creates the corresponding `.txt` files for these images using the corresponding `.csv` file, which are formatted for YOLO training. All processed images and their corresponding `.txt` files are saved to the `datasets` folder. Note that the TIFF images under `images/site{x}` have the same basename as the CSV file to ensure alignment. The CSV file's columns `Especie`, `POINT_X`, and `POINT_Y` are used for creating and labeling the bounding boxes, with each bounding box having the same size of 10x10 meters.
 
 The dataset is split into three subsets:
 - `train`: 80%
