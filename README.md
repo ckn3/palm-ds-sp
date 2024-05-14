@@ -19,3 +19,13 @@ You can install these packages using pip. Run the following command:
 ```bash
 pip install rasterio shapely geopandas natsort
 
+## tif2yolo Functionality
+
+The `tif2yolo` function crops the images in the `images/site{x}` folder into 800x800 patches and creates the corresponding `.txt` files for these images, which are formatted for YOLO training. All processed images and their corresponding `.txt` files are saved to the `datasets` folder.
+
+The dataset is split into three subsets:
+- `train`: 80%
+- `val`: 10%
+- `test`: 10%
+
+Ensure that your input images are placed in the `images/site{x}` directory before running the `tif2yolo` script.
