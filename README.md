@@ -26,7 +26,7 @@ Before you can use the `tif2yolo` functionality, you need to install the followi
 You can install these packages using pip. Run the following command:
 
 ```bash
-pip install rasterio shapely geopandas natsort
+pip install rasterio shapely geopandas natsort scikit-learn
 ```
 
 Ensure that your input images are placed in the `images/site{x}` directory before running the `tif2yolo` script.
