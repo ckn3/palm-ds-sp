@@ -1,5 +1,3 @@
 # palm-detection
 
-Prerequisite packages:
-'pip install rasterio'
-'pip install shapely'
+Prerequisite packages for tif2yolo: rasterio shapely
