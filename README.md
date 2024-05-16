@@ -1,4 +1,4 @@
-# palm-detection
+# palm-detection-segmentation
 
 ## tif2yolo.py
 
