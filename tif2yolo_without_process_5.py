@@ -1,12 +1,4 @@
-# %%
 
-
-
-# %% md
-# 1. 将所有**经纬度坐标**转换为**像素坐标**
-# %%
-
-# %%
 import os
 import rasterio
 import pandas as pd
@@ -42,15 +34,6 @@ def convert_coordinates_to_pixels(tif_path, csv_1_path, csv_2_path):
     # 保存更新后的 CSV 文件
     df.to_csv(csv_2_path, index=False)
     print(f"Updated CSV saved to {csv_2_path}")
-
-
-# %%
-
-tif_path = "data/JAMACOAQUE2.tif"
-csv_1_path = "data/Site_2_data_without_nonpalm_points.csv"
-csv_2_path = "data/Site_2_with_pixel_location.csv"
-convert_coordinates_to_pixels(tif_path, csv_1_path, csv_2_path)
-
 
 # %%
 def create_bbox(orthomosaic_file, csv_2_path, object_length):
@@ -113,9 +96,6 @@ def create_big_box(csv_2_path, img_size):
 
 
 
-# %% md
-# 4. 筛选
-# %%
 def screenshot(idx, false_bboxs, csv_2_path):
     import pandas as pd
     import rasterio
@@ -188,7 +168,6 @@ def screenshot(idx, false_bboxs, csv_2_path):
 
 
 
-# %%
 def get_tif_filename(tif_path):
     # 获取文件的基本名称（包含扩展名）
     base_name = os.path.basename(tif_path)
@@ -287,9 +266,6 @@ def check_bbox_is_valid(csv_2_path, tif_path, output_dir, bbox_pixel_length=113)
                     sub_center_y >= center_y - img_size / 2 - width) and (
                     sub_center_y <= center_y + img_size / 2 + width):
                 false_bboxs.append(sub_index)
-                # print(sub_index)
-
-        # remove_bbox_into_white(csv_2_path, true_bboxs, false_bboxs)
 
         real_img = screenshot(index, false_bboxs, csv_2_path)
 
@@ -474,7 +450,7 @@ img_size = 800
 tif_path = "data/JAMACOAQUE2.tif"
 csv_1_path = "data/Site_2_data_without_nonpalm_points.csv"
 csv_2_path = "data/Site_2_with_pixel_location.csv"
-output_dir = "test"
+output_dir = "test2"
 
 convert_coordinates_to_pixels(tif_path, csv_1_path, csv_2_path)
 bbox_pixel_length = create_bbox(tif_path, csv_2_path, object_length)
