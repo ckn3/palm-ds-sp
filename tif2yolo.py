@@ -580,7 +580,7 @@ def optimized_box(source_folder):
                 aspect_ratio = max(bbox_width, bbox_height) / min(bbox_width, bbox_height)
 
                 # Only add the bounding box if it has a suitable aspect ratio and area
-                if 10000 <= area and aspect_ratio <= 2:
+                if 2500 <= area and aspect_ratio <= 2:
                     new_lines.append(line)
 
             # Write the lines back to the file if there is data after filtering, otherwise leave the file empty
@@ -739,7 +739,7 @@ def tif2yolo(tif_path, output_path, csv_path, tile_dimenson=800):
     json_path = os.path.join(output_path, "tiling_scheme.json")
     output_dir = os.path.dirname(tif_path)
     #class_cloname, object_size 默认值为->class_cloname='Especie', object_size=10
-    new_csv_path = global_annotations_to_tiles(json_path, output_dir, csv_path, class_cloname='Especie', object_size=10)
+    new_csv_path = global_annotations_to_tiles(json_path, output_dir, csv_path, class_cloname='Especie', object_size=5)
 
     csv2yolo(new_csv_path, output_path, tile_dimenson)
 
