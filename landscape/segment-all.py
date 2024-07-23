@@ -10,7 +10,7 @@ import time
 
 from ultralytics import SAM
 
-def apply_segmentation_to_landscape(site_number):
+def apply_segmentation_to_landscape(site_number, model_name, model_choice):
     site_directory = f"images/site{site_number}"
     tif_files = [f for f in os.listdir(site_directory) if f.endswith('.tif')]
     if not tif_files:
@@ -19,7 +19,7 @@ def apply_segmentation_to_landscape(site_number):
     tif_file = tif_files[0]
     input_tif_path = os.path.join(site_directory, tif_file)
     base_name = os.path.splitext(tif_file)[0]
-    csv_path = os.path.join(site_directory, f'combined_predictions.csv')
+    csv_path = os.path.join(site_directory, f'filtered_{base_name}_{model_name}.csv')
 
     with rasterio.open(input_tif_path) as src:
         data = src.read([1, 2, 3])
@@ -32,9 +32,13 @@ def apply_segmentation_to_landscape(site_number):
     df['y1'] = df['y_center'] - df['Height'] / 2
     df['x2'] = df['x_center'] + df['Width'] / 2
     df['y2'] = df['y_center'] + df['Height'] / 2
-    df['class_id'] = df['Predicted Class'].map({'Fan unk.': 1, 'Bottlebrush unk.': 2})
+    df['class_id'] = df['Predicted Class'].map({'Palm': 1, 'Bottlebrush unk.': 2})
 
-    model = SAM('mobile_sam.pt')
+    model_files = {1: 'mobile_sam.pt', 2: 'sam_b.pt'}
+    model_prefix = {1: 'SAMm', 2: 'SAM'}
+    model_file = model_files[model_choice]
+
+    model = SAM(model_file) # mobile_sam sam_l sam_b
 
     for _, row in df.iterrows():
         x, y, width, height = int(row['x_center']), int(row['y_center']), int(row['Width']), int(row['Height'])
@@ -64,7 +68,8 @@ def apply_segmentation_to_landscape(site_number):
             # print(np.max(overlay))
             # plt.imsave(os.path.join('intermediate', f'patch_{base_name}_{x}_{y}.png'), overlay)
 
-    output_image_path = os.path.join(site_directory, f'Annotated_{base_name}.png')
+    output_image_name = f"{model_prefix[model_choice]}_{base_name}_{model_choice}.png"
+    output_image_path = os.path.join(site_directory, output_image_name)
     colors = ['black', 'blue', 'red']  # Custom colormap: background, class 1, class 2
     cmap = ListedColormap(colors)
 
@@ -77,8 +82,10 @@ def apply_segmentation_to_landscape(site_number):
     print(f"Segmentation overlay saved to {output_image_path}")
 
 site_number = input("Enter the site number: ")
+model_name = input("Enter the model name: ")
+model_choice = int(input("Enter the model number (1 for mobile_sam, 2 for sam_b): "))
 
 start_time = time.time()
-apply_segmentation_to_landscape(site_number)
+apply_segmentation_to_landscape(site_number, model_name, model_choice)
 end_time = time.time()
 print(f"Time taken: {end_time - start_time:.2f} seconds.")

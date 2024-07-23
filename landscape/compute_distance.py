@@ -15,7 +15,7 @@ def get_degree_bounds(lon, lat, meters, dataset):
         degreesY = meters * pixelSizeY
     return lon - degreesX, lon + degreesX, lat - degreesY, lat + degreesY
 
-def compare_coordinates(site_numbers, distance_threshold=10):
+def compare_coordinates(site_numbers, model_name, distance_threshold=10):
     all_distances = []  # Collect distances from all sites
     total_detected = 0
     total_labelled = 0
@@ -28,7 +28,7 @@ def compare_coordinates(site_numbers, distance_threshold=10):
         tif_name = tif_files[0]
         orthomosaic_file = os.path.join(site_directory, tif_name)
 
-        filtered_csv = os.path.join(site_directory, f'filtered_{tif_name[:-4]}_v10.csv')
+        filtered_csv = os.path.join(site_directory, f'filtered_{tif_name[:-4]}_{model_name}.csv') # filtered_ predictions_
         tif_csv = os.path.join(site_directory, f'{tif_name[:-4]}.csv')
         filtered_df = pd.read_csv(filtered_csv)
         tif_df = pd.read_csv(tif_csv)
@@ -71,7 +71,7 @@ def compare_coordinates(site_numbers, distance_threshold=10):
 
     # Plotting the histogram for all sites
     plt.figure(figsize=(10, 6))
-    plt.hist(all_distances, bins=30, color='blue', edgecolor='black')
+    plt.hist(all_distances, bins=10, color='blue', edgecolor='black')
     plt.title('Histogram of Distances in Meters Across All Sites')
     plt.xlabel('Distance (meters)')
     plt.ylabel('Frequency')
@@ -80,5 +80,5 @@ def compare_coordinates(site_numbers, distance_threshold=10):
     plt.close()
 
 # Example usage for sites 1 through 5
-site_numbers = range(1, 2)
-compare_coordinates(site_numbers, 5)
+site_numbers = [1, 2, 12, 15, 16] 
+compare_coordinates(site_numbers, 'rt', 5)

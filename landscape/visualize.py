@@ -6,6 +6,8 @@ import os
 
 # Define paths
 site_number = input("Enter the site number: ")
+model_name = input("Enter the model name: ")
+
 site_directory = f"images/site{site_number}"
 tif_files = [f for f in os.listdir(site_directory) if f.endswith('.tif')]
 if not tif_files:
@@ -16,13 +18,10 @@ input_tif_path = os.path.join(site_directory, tif_file)
 base_name = os.path.splitext(tif_file)[0]
 print(base_name)
 # csv_path = os.path.join(site_directory, f'filtered_{base_name}_v10s.csv')
-csv_path = os.path.join(site_directory, f'combined_predictions.csv')
+csv_path = os.path.join(site_directory, f'filtered_{base_name}_{model_name}.csv')
 
-option = int(input("Enter 1 for markers, 2 for bounding boxes: "))
-if option == 1:
-    output_image_paths = [os.path.join(site_directory, f'Annotated_{base_name}a.png')]
-elif option == 2:
-    output_image_paths = [os.path.join(site_directory, f'Annotated_{base_name}b.png')]
+output_image_paths = [os.path.join(site_directory, f'Bbox_{base_name}_{model_name}.png')]
+    
 
 # Printing paths to confirm
 for path in output_image_paths:
@@ -46,7 +45,7 @@ for output_image_path in output_image_paths:
         px, py = ~transform * (lon, lat)
         return int(px), int(py)
 
-    colors = {'Bottlebrush unk.': 'blue', 'Fan unk.': 'red', 'Palm': 'blue'}
+    colors = {'Bottlebrush unk.': 'blue', 'Fan unk.': 'red', 'Palm': 'red'}
 
     for index, row in df.iterrows():
         lon, lat = row['Longitude'], row['Latitude']
@@ -55,12 +54,8 @@ for output_image_path in output_image_paths:
         x, y = coords_to_pixel(lon, lat, transform)
         marker_size_points = (50) ** 2 * width * height / 25000
 
-        if option == 1:  # Only markers
-            ax.scatter(x, y, color=colors.get(class_name, 'green'), marker='+', s=marker_size_points, linewidths=3)
-
-        elif option == 2:  # Only bounding boxes
-            rect = patches.Rectangle((x - width/2, y - height/2), width, height, linewidth=2, edgecolor=colors.get(class_name, 'green'), facecolor='none')
-            ax.add_patch(rect)
+        rect = patches.Rectangle((x - width/2, y - height/2), width, height, linewidth=2, edgecolor=colors.get(class_name, 'green'), facecolor='none')
+        ax.add_patch(rect)
 
     handles, labels = plt.gca().get_legend_handles_labels()
     unique_labels = dict(zip(labels, handles))
