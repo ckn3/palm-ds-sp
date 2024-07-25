@@ -3,7 +3,7 @@ ultralytics.checks()
 
 import numpy as np
 from ultralytics import YOLO, RTDETR
-# from ultralytics import YOLOv10
+from ultralytics import YOLOv10
 import cv2
 import time
 import os
@@ -57,17 +57,59 @@ def save_bounding_box_info_to_csv_and_yolo_txt(results, predictions_csv, local_t
                         # Write YOLO format to txt file
                         txt_file.write(f"{class_id} {norm_x_center} {norm_y_center} {norm_width} {norm_height}\n")
 
+def remove_redundant_predictions(csv_path, output_csv_path, transform, stride):
+    df = pd.read_csv(csv_path)
+    
+    # Convert lon/lat to pixel coordinates and calculate bounding boxes
+    df['y_center'], df['x_center'] = zip(*df.apply(lambda row: rasterio.transform.rowcol(transform, row['Longitude'], row['Latitude']), axis=1))
+    df['x1'] = df['x_center'] - (df['Width'] / 2)
+    df['y1'] = df['y_center'] - (df['Height'] / 2)
+    df['x2'] = df['x_center'] + (df['Width'] / 2)
+    df['y2'] = df['y_center'] + (df['Height'] / 2)
+    df['box'] = df.apply(lambda row: box(row['x1'], row['y1'], row['x2'], row['y2']), axis=1)
+    df['area'] = df.apply(lambda row: row['box'].area, axis=1)
+    
+    # Sort boxes by area in descending order to prioritize larger boxes
+    df_sorted = df.sort_values(by='area', ascending=False)
+    
+    keep_boxes = []  # List to keep boxes that are not redundant
+    box_info = []  # To store box and their x, y indices
+
+    for _, current_row in df_sorted.iterrows():
+        current_box = current_row['box']
+        current_x = current_row['X']
+        current_y = current_row['Y']
+
+        # Limit the search to nearby entries based on the col and row
+        for kept_box, kept_x, kept_y in box_info:
+            if abs(kept_x - current_x) <= crop_size and abs(kept_y - current_y) <= crop_size:
+                intersection = current_box.intersection(kept_box)
+                intersection_area = intersection.area
+                if intersection_area / kept_box.area > 0.9:
+                    keep_boxes.remove(kept_box)
+                    box_info = [(box, x, y) for box, x, y in box_info if box != kept_box]
+                    print(f"Removed overlapping box due to proximity: {intersection_area / kept_box.area}")
+
+        # Add the current box if it is not already included in the kept boxes
+        if current_box not in keep_boxes:
+            keep_boxes.append(current_box)
+            box_info.append((current_box, current_x, current_y))
+
+    # Filter the dataframe to include only boxes that are kept
+    df_filtered = df[df['box'].isin(keep_boxes)]
+    df_filtered[['Longitude', 'Latitude', 'Width', 'Height', 'Predicted Class', 'X', 'Y', 'Xc', 'Yc', 'Conf']].to_csv(output_csv_path, index=False)
+    print(f"Filtered predictions saved to {output_csv_path}")
+
 # Get the model name and path
 model_name = input("Enter the model name: ")
 model_path = input("Enter the model path: ")
-model = YOLO(model_path)
+model = YOLOv10(model_path)
 
 # Define parameters
 crop_size = 800
 stride = 400
 site_number = input("Enter the site number: ")
 site_directory = f"images/site{site_number}"
-results_directory = f"v9results"
 tif_files = [f for f in os.listdir(site_directory) if f.endswith('.tif')]
 if not tif_files:
     print(f"No TIFF files found in {site_directory}.")
@@ -76,7 +118,7 @@ tif_file = tif_files[0]
 input_path = os.path.join(site_directory, tif_file)
 base_name = os.path.splitext(os.path.basename(input_path))[0]
 save_dir = os.path.join(site_directory, f'cropped_{base_name}')
-predictions_csv = os.path.join(results_directory, f'predictions_{base_name}_{model_name}.csv')
+predictions_csv = os.path.join(site_directory, f'predictions_{base_name}_{model_name}.csv')
 
 # Make directories and CSV file
 os.makedirs(save_dir, exist_ok=True)
@@ -143,10 +185,3 @@ if os.path.exists(save_dir):
     print(f"Deleted folder at {save_dir}")
 else:
     print(f"Folder at {save_dir} does not exist.")
-
-# weights/v10/v10_1.pt
-# weights/v10/v10_5.pt
-# runs/detect/train5/weights/best.pt
-# weights/detr/rt5.pt
-# /home/kangnicui2/yolo/runs/detect/train10/weights/best.pt
-# runs/detect/train5/weights/best.pt

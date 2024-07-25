@@ -3,6 +3,8 @@ import pandas as pd
 import rasterio
 import math
 import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 
 def get_degree_bounds(lon, lat, meters, dataset):
     pixelSizeX, pixelSizeY = dataset.transform[0], abs(dataset.transform[4])
@@ -16,11 +18,21 @@ def get_degree_bounds(lon, lat, meters, dataset):
     return lon - degreesX, lon + degreesX, lat - degreesY, lat + degreesY
 
 def compare_coordinates(site_numbers, model_name, distance_threshold=10):
-    all_distances = []  # Collect distances from all sites
-    total_detected = 0
-    total_labelled = 0
+    plt.figure(figsize=(7, 4))  # Adjusted for a two-column paper
+    site_colors = sns.color_palette("hsv", len(site_numbers))
+    
+    # Dictionary to map file basenames to desired legend labels
+    legend_labels = {
+        'FCAT6': 'FCAT 1',
+        'FCAT10': 'FCAT 2',
+        'FCAT11': 'FCAT 3',
+        'JAMACOAQUE1': 'Jama-Coaque 1',
+        'JAMACOAQUE2': 'Jama-Coaque 2'
+    }
 
-    for site_number in site_numbers:
+    site_labels = []
+
+    for site_number, color in zip(site_numbers, site_colors):
         site_directory = f"images/site{site_number}"
         tif_files = [f for f in os.listdir(site_directory) if f.endswith('.tif')]
         if len(tif_files) != 1:
@@ -28,7 +40,7 @@ def compare_coordinates(site_numbers, model_name, distance_threshold=10):
         tif_name = tif_files[0]
         orthomosaic_file = os.path.join(site_directory, tif_name)
 
-        filtered_csv = os.path.join(site_directory, f'filtered_{tif_name[:-4]}_{model_name}.csv') # filtered_ predictions_
+        filtered_csv = os.path.join(site_directory, f'filtered_{tif_name[:-4]}_{model_name}.csv')
         tif_csv = os.path.join(site_directory, f'{tif_name[:-4]}.csv')
         filtered_df = pd.read_csv(filtered_csv)
         tif_df = pd.read_csv(tif_csv)
@@ -37,6 +49,7 @@ def compare_coordinates(site_numbers, model_name, distance_threshold=10):
             closest_records = []
             count_ratio = 0
 
+            distances = []
             for index, tif_row in tif_df.iterrows():
                 lon1, lat1 = tif_row['POINT_X'], tif_row['POINT_Y']
                 lon_min, lon_max, lat_min, lat_max = get_degree_bounds(lon1, lat1, distance_threshold, dataset)
@@ -57,26 +70,24 @@ def compare_coordinates(site_numbers, model_name, distance_threshold=10):
                         'Human_Latitude': closest_point['Latitude'],
                         'Distance': closest_point['Distance']
                     })
-                    all_distances.append(closest_point['Distance'])
+                    distances.append(closest_point['Distance'])
+
+            if distances:
+                sns.kdeplot(distances, bw_adjust=0.5, color=color, label=legend_labels.get(tif_name[:-4], tif_name[:-4]), clip=(0, None))
+                site_labels.append(legend_labels.get(tif_name[:-4], tif_name[:-4]))
 
             closest_df = pd.DataFrame(closest_records)
             closest_df.to_csv(os.path.join(site_directory, f'closest_points_{tif_name[:-4]}.csv'), index=False)
             site_ratio = count_ratio / len(tif_df) if len(tif_df) > 0 else 0
             print(f"Site {site_number} matched ratio: {site_ratio:.4f}")
-            total_detected += count_ratio
-            total_labelled += len(tif_df)
 
-    overall_ratio = total_detected / total_labelled if total_labelled > 0 else 0
-    print(f"Overall matched ratio across all sites: {overall_ratio:.4f}")
-
-    # Plotting the histogram for all sites
-    plt.figure(figsize=(10, 6))
-    plt.hist(all_distances, bins=10, color='blue', edgecolor='black')
-    plt.title('Histogram of Distances in Meters Across All Sites')
+    # plt.title('Distribution of Distance Shifts Across Sites')
     plt.xlabel('Distance (meters)')
-    plt.ylabel('Frequency')
-    plt.grid(True)
-    plt.savefig('images/combined_distance_histogram.png')
+    plt.ylabel('Density')
+    plt.legend(title='Site Name', loc='upper right', labels=site_labels, fontsize='small')
+    # plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('images/distribution_of_distances.png')
     plt.close()
 
 # Example usage for sites 1 through 5

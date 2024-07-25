@@ -68,7 +68,7 @@ def apply_segmentation_to_landscape(site_number, model_name, model_choice):
             # print(np.max(overlay))
             # plt.imsave(os.path.join('intermediate', f'patch_{base_name}_{x}_{y}.png'), overlay)
 
-    output_image_name = f"{model_prefix[model_choice]}_{base_name}_{model_choice}.png"
+    output_image_name = f"{model_prefix[model_choice]}_{base_name}.png"
     output_image_path = os.path.join(site_directory, output_image_name)
     colors = ['black', 'blue', 'red']  # Custom colormap: background, class 1, class 2
     cmap = ListedColormap(colors)

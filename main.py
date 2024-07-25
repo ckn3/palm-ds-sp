@@ -19,7 +19,8 @@ if choice == 'train':
                          "3. yolov9c\n"
                          "4. yolov9e\n"
                          "5. rtdert-l\n"
-                         "6. rtdetr-x\n")
+                         "6. rtdetr-x\n"
+                         "7. others\n")
     
     if model_choice == '1':
         model = YOLO('yolov8l.pt')
@@ -30,14 +31,18 @@ if choice == 'train':
     elif model_choice == '4':
         model = YOLO('yolov9e.pt')
     elif model_choice == '5':
-        model = RTDETR('rtdert-l.pt')
+        model = RTDETR('rtdetr-l.pt')
     elif model_choice == '6':
         model = RTDETR('rtdetr-x.pt')
+    elif model_choice == '7':
+        model_path = input("Enter the model you want to train with (e.g., 'yolov8m.pt'): ")
+        model = YOLO(model_path)
     else:
         print("Invalid model choice.")
         exit()
     
-    results = model.train(data='datasets/data.yaml', epochs=300, imgsz=800, device=[0,1,2,3])
+    epochs = int(input("Enter the number of epochs to train: "))
+    results = model.train(data='datasets1/data.yaml', epochs=epochs, imgsz=800, single_cls=True, device=[0,1,2,3])
     
 elif choice == 'evaluate':
     model_choice = input("Which model do you want to use? Enter the number of your choice:\n"
@@ -45,21 +50,25 @@ elif choice == 'evaluate':
                          "2. yolov8x\n"
                          "3. yolov9c\n"
                          "4. yolov9e\n"
-                         "5. rtdert-l\n"
-                         "6. rtdetr-x\n")
+                         "5. rtdetr-l\n"
+                         "6. rtdetr-x\n"
+                         "7. others\n")
     
     if model_choice == '1':
-        model = YOLO('runs/detect/train/weights/best.pt')
+        model = YOLO('runs/detect/train-v8l/weights/best.pt')
     elif model_choice == '2':
-        model = YOLO('runs/detect/train2/weights/best.pt')
+        model = YOLO('weights/epochs300/v8.pt')
     elif model_choice == '3':
-        model = YOLO('runs/detect/train3/weights/best.pt')
+        model = YOLO('runs/detect/train-v9c/weights/best.pt')
     elif model_choice == '4':
-        model = YOLO('runs/detect/train4/weights/best.pt')
+        model = YOLO('weights/epochs300/v9.pt')
     elif model_choice == '5':
-        model = RTDETR('runs/detect/train5/weights/best.pt')
+        model = RTDETR('runs/detect/train-rtl/weights/best.pt')
     elif model_choice == '6':
-        model = RTDETR('runs/detect/train6/weights/best.pt')
+        model = RTDETR('weights/epochs300/rt.pt')
+    elif model_choice == '7':
+        model_path = input("Enter the model you want to evaluate with (e.g., 'yolov8m.pt'): ")
+        model = YOLO(model_path)
     else:
         print("Invalid model choice.")
         exit()
