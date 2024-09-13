@@ -6,7 +6,7 @@ The `main.py` script provides functionality for training and evaluating object d
 
 ### Key Functionalities:
 - **Model Selection**: Users can choose from a set of YOLO and RTDETR models or provide their own model path for custom training or evaluation.
-- **Training**: Trains the selected model using the specified dataset (`datasets1/data.yaml`) and saves the results, including weights, during the training process. It also supports multi-GPU training.
+- **Training**: Trains the selected model using the specified dataset (`datasets/data.yaml`) and saves the results, including weights, during the training process. It also supports multi-GPU training.
 - **Evaluation**: Evaluates the performance of a trained model, providing key metrics such as mAP (mean Average Precision) across various thresholds (mAP50, mAP75, mAP50-95). The evaluation results are saved in a CSV file for future reference.
   
 ### How to Use:
