@@ -28,3 +28,16 @@ pip install rasterio shapely geopandas natsort scikit-learn
 ```
 
 Ensure that your input images are placed in the `images/site{x}` directory before running the `tif2yolo` script.
+
+## convert.py
+
+The `convert.py` script is used to convert JSON label files into YOLO format labels. It processes JSON files found in a specified directory and generates corresponding `.txt` files, where bounding box information is reformatted to YOLO format for training object detection models.
+
+### Key Functionality:
+- **JSON to YOLO Conversion**: The script walks through the `source_folder`, detects `.json` files, extracts bounding box data, and converts the coordinates into YOLO format.
+  - It calculates the bounding box center (`x_center`, `y_center`), width, and height normalized to the image size (800x800).
+  - The labels are written to a `.txt` file, where each entry includes the class index (always set to "0" in this script), `x_center`, `y_center`, `width`, and `height`.
+
+### How to Use:
+1. Ensure your JSON files are stored in folders like `datasets1`, `datasets2`, etc.
+2. Run the script, and for each folder (e.g., `datasets1`, `datasets2`), it will create YOLO-compatible `.txt` files in the same directory as the corresponding `.json` files.
