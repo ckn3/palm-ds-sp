@@ -14,7 +14,7 @@ The `main.py` script provides functionality for training and evaluating object d
    - Run the script and select the "train" option.
    - Choose the model from a list (YOLOv8, YOLOv9, RTDETR) or input the path to a custom model.
    - Input the number of epochs for training.
-   - The model will be trained using the dataset provided in `datasets1/data.yaml`, and the results (including weights) will be saved automatically.
+   - The model will be trained using the dataset provided in `datasets/data.yaml`, and the results (including weights) will be saved automatically.
   
 2. **Evaluation**: 
    - Run the script and select the "evaluate" option.
