@@ -22,6 +22,34 @@ The `count.py` script is designed to count the total number of lines across all 
 1. Specify the target directory containing the `.txt` files (can include subdirectories).
 2. The script will scan all the `.txt` files and output the total number of lines found across them.
 
+## split.py
+
+The `split.py` script splits a dataset of images and their corresponding `.json` labels into training, validation, and test sets. This script ensures that the images and labels are organized into separate folders, making them ready for training and validation in object detection tasks.
+
+### Key Functionality:
+- **Dataset Splitting**: The dataset is divided into training, validation, and test sets, with default ratios of 90% training and 10% validation. The user can modify these ratios as needed.
+- **Paired Image and Label Copying**: For each image, its corresponding `.json` label file is also copied to the appropriate folder. If a `.json` file does not exist for an image, it will skip copying the label.
+  
+### How to Use:
+1. Specify the source folder containing the images and `.json` label files.
+2. Define the destination folder where the `train`, `val`, and `test` sets will be stored.
+3. Optionally adjust the split ratios (default: 90% for training, 10% for validation).
+
+The script will create the following directory structure within the destination folder:
+```
+datasets1/
+├── train/
+│   ├── images/
+│   └── labels/
+├── val/
+│   ├── images/
+│   └── labels/
+└── test/
+    ├── images/
+    └── labels/
+```
+The train, validation, and test sets will contain images and their corresponding `.json` label files (if available). The script will print a message confirming successful dataset splitting.
+
 ## tif2yolo.py
 
 The `tif2yolo` function crops the images in the `images/site{x}` folder into 800x800 patches and creates the corresponding `.txt` files for these images using the corresponding `.csv` file, which are formatted for YOLO training. All processed images and their corresponding `.txt` files are saved to the `datasets` folder. Note that the TIFF images under `images/site{x}` have the same basename as the CSV file to ensure alignment. The CSV file's columns `Especie`, `POINT_X`, and `POINT_Y` are used for creating and labeling the bounding boxes, with each bounding box having the same size of 10x10 meters.
