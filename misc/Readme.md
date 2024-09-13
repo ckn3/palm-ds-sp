@@ -1,3 +1,18 @@
+# Usage Overview
+
+This collection of scripts facilitates the preparation and organization of datasets for YOLO-based object detection tasks. If your data is in YOLO format, you can directly use it for splitting. However, if your data is in JSON format, you will first need to use `convert.py` to transform it into YOLO format. After converting your data, you have two options for splitting it into training, validation, and test sets:
+
+1. **`split.py`**: This script splits the dataset into training, validation, and test sets once.
+2. **`split5.py`**: This script performs the splitting process five times, each with a different random seed, to create multiple datasets for robust cross-validation or experimentation.
+
+To count the number of instances in your dataset, use `count.py`, which will tally the number of annotations across all `.txt` files.
+
+**Workflow**:
+1. Place your dataset in a folder named `yolo`.
+2. Use `convert.py` to convert JSON labels to YOLO format.
+3. Run `split.py` or `split5.py` to divide the dataset into train, validation, and test subsets according to your needs.
+
+
 ## convert.py
 
 The `convert.py` script is used to convert JSON label files into YOLO format labels. It processes JSON files found in a specified directory and generates corresponding `.txt` files, where bounding box information is reformatted to YOLO format for training object detection models.
@@ -50,34 +65,53 @@ datasets1/
 ```
 The train, validation, and test sets will contain images and their corresponding `.json` label files (if available). The script will print a message confirming successful dataset splitting.
 
-## tif2yolo.py
+## split5.py
 
-The `tif2yolo` function crops the images in the `images/site{x}` folder into 800x800 patches and creates the corresponding `.txt` files for these images using the corresponding `.csv` file, which are formatted for YOLO training. All processed images and their corresponding `.txt` files are saved to the `datasets` folder. Note that the TIFF images under `images/site{x}` have the same basename as the CSV file to ensure alignment. The CSV file's columns `Especie`, `POINT_X`, and `POINT_Y` are used for creating and labeling the bounding boxes, with each bounding box having the same size of 10x10 meters.
+The `split5.py` script splits a dataset of images and their corresponding `.json` labels into training, validation, and test sets. The splitting process is repeated **five times** with different random seeds, creating five separate datasets. Each dataset can be used for cross-validation or other experimental setups.
 
-The dataset is split into three subsets:
-- `train`: 80%
-- `val`: 10%
-- `test`: 10%
+### Key Functionality:
+- **Repeated Dataset Splitting**: The script splits the dataset five times, each with a different random shuffle of the images.
+- **Separate Folders for Each Split**: Each split creates its own `train`, `val`, and `test` directories under separate folders (e.g., `datasets1`, `datasets2`, etc.).
+- **Paired Image and Label Copying**: For each image, the corresponding `.json` label is copied to the appropriate folder. If the `.json` file is missing, only the image is copied.
 
-Before you can use the `tif2yolo` functionality, you need to install the following packages:
+### How to Use:
+1. Specify the source folder containing the images and `.json` label files.
+2. The script will automatically create five datasets, named `datasets1`, `datasets2`, etc.
+3. Each dataset contains train, validation, and test subdirectories for images and labels.
 
-[![rasterio - 1.3.10](https://img.shields.io/badge/rasterio-1.3.10-blue?logo=python)](https://rasterio.readthedocs.io/en/stable/)
-[![shapely - 2.0.4](https://img.shields.io/badge/shapely-2.0.4-blue?logo=python)](https://shapely.readthedocs.io/en/stable/manual.html)
-[![geopandas - 0.14.4](https://img.shields.io/badge/geopandas-0.14.4-blue?logo=python)](https://geopandas.org/en/stable/)
-[![natsort - 8.4.0](https://img.shields.io/badge/natsort-8.4.0-blue?logo=python)](https://pypi.org/project/natsort/)
-[![scikit-learn - 1.4.2](https://img.shields.io/badge/scikit--learn-1.4.2-blue?logo=python)](https://scikit-learn.org/stable/)
+The script will create the following folder structure:
 
-- `rasterio`: A library for reading and writing geospatial raster data.
-- `shapely`: A library for manipulation and analysis of planar geometric objects.
-- `geopandas`: An open source project to make working with geospatial data in Python easier.
-- `natsort`: A natural sorting algorithm to sort lists of strings and numbers naturally.
-- `scikit-learn`: A machine learning library for Python.
+```
+datasets1/
+├── train/
+│   ├── images/
+│   └── labels/
+├── val/
+│   ├── images/
+│   └── labels/
+└── test/
+    ├── images/
+    └── labels/
 
-You can install these packages using pip. Run the following command:
+datasets2/
+├── train/
+├── val/
+└── test/
 
-```bash
-pip install rasterio shapely geopandas natsort scikit-learn
+datasets3/
+├── train/
+├── val/
+└── test/
+
+datasets4/
+├── train/
+├── val/
+└── test/
+
+datasets5/
+├── train/
+├── val/
+└── test/
 ```
 
-Ensure that your input images are placed in the `images/site{x}` directory before running the `tif2yolo` script.
-
+Each folder will contain the train, val, and test splits, with the corresponding images and `.json` label files.
