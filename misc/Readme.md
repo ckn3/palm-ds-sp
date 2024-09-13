@@ -95,23 +95,27 @@ datasets1/
 
 datasets2/
 ├── train/
+│   ├── images/
+│   └── labels/
 ├── val/
+│   ├── images/
+│   └── labels/
 └── test/
+    ├── images/
+    └── labels/
 
-datasets3/
-├── train/
-├── val/
-└── test/
-
-datasets4/
-├── train/
-├── val/
-└── test/
+...
 
 datasets5/
 ├── train/
+│   ├── images/
+│   └── labels/
 ├── val/
+│   ├── images/
+│   └── labels/
 └── test/
+    ├── images/
+    └── labels/
 ```
 
 Each folder will contain the train, val, and test splits, with the corresponding images and `.json` label files.
