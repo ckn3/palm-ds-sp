@@ -1,5 +1,17 @@
 # palm-detection-segmentation
 
+The codebase is organized into several components to facilitate various tasks related to object detection, segmentation, counting, and spatial analysis:
+
+- **`main.py`**: This script is used for training models. It allows you to choose between different YOLO and RTDETR models for training, specifying the number of epochs and managing the training process.
+
+- **`polygon-all.py`**: This script performs detection, segmentation, and counting on a Region of Interest (ROI). It is designed to handle polygonal data and apply these analyses within specified regions.
+
+- **`misc/`**: This folder contains scripts to prepare datasets for analysis. It includes functionalities for converting JSON labels to YOLO format, splitting datasets into training, validation, and test sets, and counting annotations across files.
+
+- **`landscape/`**: This folder includes all the code related to landscape analysis, encompassing detection, segmentation, and counting tasks within landscape contexts.
+
+- **`spatial-patterns/`**: This folder contains code for simulating and analyzing spatial distribution patterns. It includes tools for spatial distribution simulation and analysis to understand and model spatial patterns in your data.
+
 ## main.py
 
 The `main.py` script provides functionality for training and evaluating object detection models using the Ultralytics YOLO and RTDETR frameworks. This script allows users to select a pre-trained model or provide their own model for training or evaluation. The main features include model selection, training for a specified number of epochs, and evaluation with performance metrics. Results and metrics are saved for further analysis.
