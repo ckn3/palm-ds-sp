@@ -26,7 +26,7 @@ The `main.py` script provides functionality for training and evaluating object d
 
 To use `main.py`, the following packages need to be installed:
 
-[![numpy - 1.24.2](https://img.shields.io/badge/numpy-1.24.2-blue?logo=python)](https://numpy.org/) [![ultralytics - 8.0.117](https://img.shields.io/badge/ultralytics-8.0.117-blue?logo=python)](https://docs.ultralytics.com/) [![opencv - 4.7.0](https://img.shields.io/badge/opencv-4.7.0-blue?logo=python)](https://opencv.org/) [![torch - 2.0.1](https://img.shields.io/badge/torch-2.0.1-blue?logo=pytorch)](https://pytorch.org/)
+[![numpy - 1.26.4](https://img.shields.io/badge/numpy-1.26.4-blue?logo=python)](https://numpy.org/) [![ultralytics - 8.2.74](https://img.shields.io/badge/ultralytics-8.2.74-blue?logo=python)](https://docs.ultralytics.com/) [![opencv - 4.9.0](https://img.shields.io/badge/opencv-4.9.0-blue?logo=python)](https://opencv.org/) [![torch - 2.2.2](https://img.shields.io/badge/torch-2.2.2-blue?logo=pytorch)](https://pytorch.org/)
 
 
 - **NumPy**: Provides support for large, multi-dimensional arrays and matrices, along with a large collection of mathematical functions to operate on these arrays.
