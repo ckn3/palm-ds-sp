@@ -1,5 +1,9 @@
 # palm-detection-segmentation
 
+This repository provides the codebase associated with the paper:
+
+> **Cui, K., Tang, W., Zhu, R., Wang, M., Larsen, G. D., Pauca, V. P., Alqahtani, S., Yang, F., Segurado, D., Fine, P., et al.** "Real-Time Localization and Bimodal Point Pattern Analysis of Palms Using UAV Imagery." *arXiv preprint arXiv:2410.11124*, 2024.
+
 The codebase is organized into several components to facilitate various tasks related to object detection, segmentation, counting, and spatial analysis:
 
 - **`main.py`**: This script is used for training models. It allows you to choose between different YOLO and RTDETR models for training, specifying the number of epochs and managing the training process.
