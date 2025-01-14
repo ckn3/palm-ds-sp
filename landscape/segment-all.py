@@ -34,8 +34,8 @@ def apply_segmentation_to_landscape(site_number, model_name, model_choice):
     df['y2'] = df['y_center'] + df['Height'] / 2
     df['class_id'] = df['Predicted Class'].map({'Palm': 1, 'Bottlebrush unk.': 2})
 
-    model_files = {1: 'mobile_sam.pt', 2: 'sam_b.pt'}
-    model_prefix = {1: 'SAMm', 2: 'SAM'}
+    model_files = {1: 'mobile_sam.pt', 2: 'sam_b.pt', 3: 'sam2_b.pt'}
+    model_prefix = {1: 'SAMm', 2: 'SAM', 3: 'SAM2'}
     model_file = model_files[model_choice]
 
     model = SAM(model_file) # mobile_sam sam_l sam_b
@@ -83,7 +83,7 @@ def apply_segmentation_to_landscape(site_number, model_name, model_choice):
 
 site_number = input("Enter the site number: ")
 model_name = input("Enter the model name: ")
-model_choice = int(input("Enter the model number (1 for mobile_sam, 2 for sam_b): "))
+model_choice = int(input("Enter the model number (1 for mobile_sam, 2 for sam_b, 3 for sam2_b): "))
 
 start_time = time.time()
 apply_segmentation_to_landscape(site_number, model_name, model_choice)
